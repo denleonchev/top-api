@@ -1,6 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { ReviewService } from './review.service';
+import { REVIEW_NOT_FOUND } from './review.constants';
 
 @Controller('review')
 export class ReviewController {
@@ -16,7 +26,11 @@ export class ReviewController {
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string) {
+  async delete(@Param('id') id: string) {
+    const Doc = await this.reviewService.delete(id);
+    if (!Doc) {
+      throw new HttpException(REVIEW_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
     return this.reviewService.delete(id);
   }
 }
