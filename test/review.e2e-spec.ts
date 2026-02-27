@@ -50,6 +50,12 @@ describe('AppController (e2e)', () => {
         expect(createdId).toBeDefined();
       });
   });
+  it('/review/create (POST) - failure', async () => {
+    return request(app.getHttpServer())
+      .post('/review/create')
+      .send({ ...testDto, rating: 0 })
+      .expect(400);
+  });
 
   it('/review/byProduct (GET) - success', async () => {
     return request(app.getHttpServer())
